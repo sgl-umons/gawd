@@ -35,7 +35,13 @@ jobs:
         run: python -m build
 
       - name: Install built wheel
-        run: pip install dist/*.whl
+        run: |
+          python - << 'EOF'
+          import glob, subprocess, sys
+          wheel = glob.glob("dist/*.whl")[0]
+          print("Installing wheel:", wheel)
+          subprocess.check_call([sys.executable, "-m", "pip", "install", wheel])
+          EOF
 
       - name: Test import
         run: |
