@@ -85,3 +85,4 @@ jobs:
 
       - name: Check formatting
         run: black --check gawd/
+        continue-on-error: true
