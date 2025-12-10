@@ -34,13 +34,18 @@ jobs:
         run: python -m build
 
       - name: Install built wheel
+        shell: bash
         run: |
           python - << 'EOF'
           import glob, subprocess, sys
-          wheel = glob.glob("dist/*.whl")[0]
-          print("Installing wheel:", wheel)
+          wheels = glob.glob("dist/*.whl")
+          if not wheels:
+              raise SystemExit("No wheel files found in dist/")
+          wheel = wheels[0]
+          print("Installing:", wheel)
           subprocess.check_call([sys.executable, "-m", "pip", "install", wheel])
           EOF
+
 
       - name: Test import
         run: |
