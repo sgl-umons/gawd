@@ -1,0 +1,81 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  smoke-test-install:
+    name: Smoke Test Installation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install build backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build wheel
+        run: python -m build
+
+      - name: Install built wheel
+        run: pip install dist/*.whl
+
+      - name: Test import
+        run: |
+          python - << 'EOF'
+          import gawd
+          print("Imported gawd successfully")
+          EOF
+
+      - name: Test CLI
+        run: |
+          gawd --help
+          python -m gawd --help
+
+      - name: Functional test
+        run: |
+          mkdir test_dir
+          printf "name: test1\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test" > test_dir/w1.yml
+          printf "name: test2\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test2" > test_dir/w2.yml
+
+          gawd test_dir/w1.yml test_dir/w2.yml
+          gawd test_dir/w1.yml test_dir/w2.yml --json
+
+          python - << 'EOF'
+          from gawd import diff_workflow_files
+          diffs = diff_workflow_files("test_dir/w1.yml", "test_dir/w2.yml")
+          assert diffs, "Expected differences"
+          print("Diffs OK:", diffs)
+          EOF
+
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install black
+        run: pip install black
+
+      - name: Check formatting
+        run: black --check gawd/
