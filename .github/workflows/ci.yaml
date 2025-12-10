@@ -48,6 +48,7 @@ jobs:
 
 
       - name: Test import
+        shell: bash
         run: |
           python - << 'EOF'
           import gawd
@@ -60,6 +61,7 @@ jobs:
           python -m gawd --help
 
       - name: Functional test
+        shell: bash
         run: |
           mkdir test_dir
           printf "name: test1\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test" > test_dir/w1.yml
