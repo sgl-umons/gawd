@@ -5,6 +5,8 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 0"  # Weekly run: Sunday at 03:00 UTC
 
 jobs:
   smoke-test-install:
@@ -14,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout code
@@ -91,4 +93,3 @@ jobs:
 
       - name: Check formatting
         run: black --check gawd/
-        continue-on-error: true
