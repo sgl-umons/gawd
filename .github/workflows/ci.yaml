@@ -89,7 +89,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install black
-        run: pip install black
+        run: pip install black==23.12.1
 
       - name: Check formatting
         run: black --check gawd/
