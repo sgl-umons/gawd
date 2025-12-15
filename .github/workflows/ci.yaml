@@ -90,7 +90,7 @@ jobs:
         run: poetry install --with dev
 
       - name: Run pytest
-        run: poetry run pytest -v gawd/test/
+        run: poetry run pytest -v test/
 
 
   lint:
