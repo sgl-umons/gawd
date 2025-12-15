@@ -1,6 +1,74 @@
-[build-system]
-requires = [
-  "setuptools >= 40.9.0",
-  "wheel",
+[tool.poetry]
+name = "gawd"
+version = "1.1.2"
+description = "GitHub Actions Workflow Differ - gawd is a Python library and command-line tool for computing syntactic differences between two GitHub Actions workflow files."
+readme = "README.md"
+license = "LGPL-3.0"
+authors = [
+    "Pooya Rostami Mazrae <pooya.rostami@umons.ac.be>",
+    "Alexandre Decan <alexandre.decan@umons.ac.be>"
 ]
-build-backend = "setuptools.build_meta"
+maintainers = [
+    "Pooya Rostami Mazrae <pooya.rostami@umons.ac.be>",
+    "Alexandre Decan <alexandre.decan@umons.ac.be>",
+    "Tom Mens <tom.mens@umons.ac.be>"
+]
+keywords = [
+    "python",
+    "workflow",
+    "diff-tool",
+    "github-actions",
+    "workflow-diff"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Typing :: Typed"
+]
+
+homepage = "https://github.com/sgl-umons/gawd"
+repository = "https://github.com/sgl-umons/gawd.git"
+documentation = "https://github.com/sgl-umons/gawd#readme"
+
+[tool.poetry.urls]
+Issues = "https://github.com/sgl-umons/gawd/issues"
+Changelog = "https://github.com/sgl-umons/gawd/releases"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+"ruamel.yaml" = ">=0.17.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+black = "23.12.1"
+build = "^1.0"
+twine = "^4.0"
+
+[tool.poetry.scripts]
+gawd = "gawd:cli"
+
+[[tool.poetry.packages]]
+include = "gawd"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'

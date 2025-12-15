@@ -28,9 +28,9 @@ def find_list_matches(s1, s2):
     # List all combinations and compute their distance scores
     for (i, a), (j, b) in itertools.product(enumerate(s1), enumerate(s2)):
         # Compute a score including a penalty if positions differ
-        score = (1 - POSITION_WEIGHT) * distance(a, b) + POSITION_WEIGHT * abs(
-            i - j
-        ) / max(len(s1), len(s2))
+        score = (1 - POSITION_WEIGHT) * distance(a, b) + POSITION_WEIGHT * abs(i - j) / max(
+            len(s1), len(s2)
+        )
         candidates.append(((i, a), (j, b), score))
 
     # Find best matches
@@ -63,9 +63,7 @@ def find_job_matches(j1, j2):
     # List all combinations and compute their distance scores
     for (i, a), (j, b) in itertools.product(j1.items(), j2.items()):
         # Compute a score including a penalty if positions differ
-        score = (1 - JOB_NAME_WEIGHT) * distance(a, b) + JOB_NAME_WEIGHT * distance(
-            i, j
-        )
+        score = (1 - JOB_NAME_WEIGHT) * distance(a, b) + JOB_NAME_WEIGHT * distance(i, j)
         candidates.append(((i, a), (j, b), score))
 
     # Find best matches
@@ -134,11 +132,7 @@ def dict_changes(lpath, v1, rpath, v2):
     for k in added:
         changes.append(("added", None, None, rpath + [str(k)], v2[k]))
     for k in common:
-        changes.extend(
-            find_changes(
-                lpath + [str(k)], v1[k], rpath + [str(k)], v2[k]
-            )
-        )
+        changes.extend(find_changes(lpath + [str(k)], v1[k], rpath + [str(k)], v2[k]))
 
     return changes
 
@@ -204,7 +198,7 @@ def diff_workflows(w1, w2):
     dictionaries (e.g., loaded using ruamel.yaml).
 
     The list of differences is provided as a list of 5-uples of the form:
-    (kind, old_path, old_value, new_path, new_value) where both old_path and 
+    (kind, old_path, old_value, new_path, new_value) where both old_path and
     new_path are a list of path components (str for dict keys, int for sequence indexes).
     """
     changes = []
@@ -283,13 +277,13 @@ def diff_workflow_files(w1, w2):
     to the new workflow file.
 
     The returned list of differences contains 5-uples of the form:
-    (kind, old_path, old_value, new_path, new_value) where both old_path and 
+    (kind, old_path, old_value, new_path, new_value) where both old_path and
     new_path are a list of path components (str for dict keys, int for sequence indexes).
     """
     import ruamel.yaml as yaml
 
-    with open(w1) as f1:
-        with open(w2) as f2:
+    with open(w1, "r", encoding="utf-8") as f1:
+        with open(w2, "r", encoding="utf-8") as f2:
             parser = yaml.YAML(typ="safe", pure=True)
             w1 = parser.load(f1)
             w2 = parser.load(f2)
@@ -301,14 +295,14 @@ def diff_workflow_files(w1, w2):
 
 
 def path_to_string(components):
-    """ 
+    """
     Convert a list of path components to a string.
 
     TODO: Enable customisation of the string representation
     """
-    if components is None: 
+    if components is None:
         return None
-    
+
     output = []
     for i, component in enumerate(components):
         if isinstance(component, int):  # Sequence index
@@ -318,7 +312,7 @@ def path_to_string(components):
                 component = ".{}".format(component)
 
         output.append(component)
-    return ''.join(output)
+    return "".join(output)
 
 
 def flatten(dictionary, parent_key="", separator="."):
@@ -335,28 +329,17 @@ def flatten(dictionary, parent_key="", separator="."):
                 if isinstance(value[idx], dict):
                     if key != "steps":
                         new_key = (
-                            str(parent_key)
-                            + separator
-                            + str(key)
-                            + separator
-                            + str(idx)
+                            str(parent_key) + separator + str(key) + separator + str(idx)
                             if parent_key
                             else str(key) + separator + str(idx)
                         )
                     else:
                         new_key = (
-                            str(parent_key)
-                            + separator
-                            + str(key)
-                            + "["
-                            + str(idx)
-                            + "]"
+                            str(parent_key) + separator + str(key) + "[" + str(idx) + "]"
                             if parent_key
                             else str(key) + separator + str(idx)
                         )
-                    items.extend(
-                        flatten(value[idx], new_key, separator=separator).items()
-                    )
+                    items.extend(flatten(value[idx], new_key, separator=separator).items())
                 else:
                     items.append((new_key, value))
         else:
@@ -454,13 +437,15 @@ def cli():
     # Compute differences and convert path components to a string
     differences = []
     for kind, o_path, o_value, n_path, n_value in diff_workflow_files(args.first, args.second):
-        differences.append((
-            kind, 
-            path_to_string(o_path),
-            o_value,
-            path_to_string(n_path), 
-            n_value,
-        ))
+        differences.append(
+            (
+                kind,
+                path_to_string(o_path),
+                o_value,
+                path_to_string(n_path),
+                n_value,
+            )
+        )
 
     # Uncomment these two lines to get a pseudo-sorted list of changes
     # _sort = lambda x: x[1] if x[1] is not None else x[3]
@@ -468,9 +453,7 @@ def cli():
 
     if args.short:
         _format = (
-            lambda o: repr(o)[:20] + " (...) " + repr(o)[-10:]
-            if len(repr(o)) >= 30
-            else repr(o)
+            lambda o: repr(o)[:20] + " (...) " + repr(o)[-10:] if len(repr(o)) >= 30 else repr(o)
         )
     else:
         _format = repr
