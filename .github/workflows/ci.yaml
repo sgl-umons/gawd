@@ -6,7 +6,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * 0"  # Weekly run: Sunday at 03:00 UTC
+    - cron: "0 8 * * 1"  # Weekly run: Monday at 08:00 UTC
 
 jobs:
   smoke-test-install:
