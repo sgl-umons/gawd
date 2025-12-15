@@ -135,8 +135,6 @@ The following example shows the output of the imported library version of `gawd`
 
 ---
 
----
-
 ## Understanding the output of `gawd`
 
 `gawd` reports changes as a list of *edit operations*. Each operation has a **kind** and describes how one workflow differs from another. The possible kinds are:
