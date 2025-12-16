@@ -10,6 +10,18 @@
 It is a Python library and command-line tool that computes all changes (i.e., diffs) between two GitHub Actions workflow files.
 Given a pair of workflow files as input, and taking the specific syntax of GitHub Actions into account, `gawd` reports on the items that were added and removed, as well on items that were moved, renamed or changed based on their similarity.
 
+---
+
+## Project relocation notice
+
+**Important:** The project repository has moved.
+
+- **Old address:** `https://github.com/pooya-rostami/gawd`
+- **New address:** `https://github.com/sgl-umons/gawd`
+
+All future development, issues, pull requests, and releases are maintained under the new repository. Please update your bookmarks, CI references, and dependency links accordingly.
+
+---
 
 ## Installation
 
@@ -20,6 +32,8 @@ Pre-releases are available from the *main* branch on [GitHub](https://github.com
 and can be installed with `pip install git+https://github.com/pooya-rostami/gawd`.
 
 Alternatively, `gawd` is available via [Nix](https://search.nixos.org/packages?channel=unstable&show=gawd&from=0&size=50&sort=relevance&type=packages&query=gawd).
+
+---
 
 ## Usage
 
@@ -119,14 +133,85 @@ The following example shows the output of the imported library version of `gawd`
 ('changed', ['jobs', 'build-linux-clang38', 'steps', 6, 'with', 'name'], 'Linux CLANG38 Artifacts', ['jobs', 'build-linux-clangdwarf', 'steps', 6, 'with', 'name'], 'Linux CLANGDWARF Artifacts')]
 ```
 
+---
+
+## Understanding the output of `gawd`
+
+`gawd` reports changes as a list of *edit operations*. Each operation has a **kind** and describes how one workflow differs from another. The possible kinds are:
+
+- `added`
+- `removed`
+- `changed`
+- `moved`
+- `renamed`
+
+The detection logic follows the rules below.
+
+### Moved vs. renamed
+
+`moved` and `renamed` are conceptually similar but apply to different YAML structures:
+
+- **Moved** refers to an element whose *position* has changed **within a sequence** (e.g., a step moved from index 0 to index 1).
+- **Renamed** refers to an element whose *key* has changed **within a mapping** (e.g., a job renamed from `build-linux-clang38` to `build-linux-clangdwarf`).
+
+Both `moved` and `renamed` are only detected **within the same parent structure**:
+
+- A step moved within the same job may be detected as `moved`.
+- A step moved from one job to another will **not** be detected as a move.
+
+Detection is based on a **similarity function** that considers:
+
+- The content of the element (keys and values)
+- Its position in a sequence (for `moved`)
+- Its name/key (for `renamed`)
+
+Elements that move farther away (e.g., index 0 → 10) are considered less similar than elements that move a short distance (e.g., index 0 → 1).
+
+The sensitivity of this detection can be tuned using CLI parameters:
+
+- `--threshold`
+- `--position-weight`
+- `--job-name-weight`
+
+### Additions and removals
+
+Additions and removals are detected purely based on **path presence**.
+
+Given two workflows **A** (old) and **B** (new):
+
+- If **B** contains a path that does not exist in **A** (excluding cases detected as moves or renames), it is reported as `added`.
+- If **A** contains a path that does not exist in **B**, it is reported as `removed`.
+
+### Changed
+
+A `changed` operation is reported when:
+
+- A path exists in both workflows, **and**
+- The value at that path differs between the two versions.
+
+Note that "same path" is a simplification: `gawd` may still report a `changed` operation when an element is also detected as `moved` or `renamed`.
+
+As a result, it is possible to observe **multiple change kinds** for the same logical element, such as:
+
+- `moved` + `changed`
+- `renamed` + `changed`
+
+This reflects the fact that the element both changed location/name *and* changed content.
+
+---
+
 ## Contributions
 
 Contributions are very welcome!
 Feel free to report bugs or suggest new features using GitHub issues and/or pull requests.
 
+---
+
 ## License
 
 This tool is distributed under [GNU Lesser General Public License v3](https://github.com/pooya-rostami/gawd/blob/main/LICENSE.txt).
+
+---
 
 
 ## Citing
