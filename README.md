@@ -9,6 +9,7 @@
 `gawd` stands for **G**itHub **A**ctions **W**orkflow **D**iffer.
 It is a Python library and command-line tool that computes all changes (i.e., diffs) between two GitHub Actions workflow files.
 Given a pair of workflow files as input, and taking the specific syntax of GitHub Actions into account, `gawd` reports on the items that were added and removed, as well on items that were moved, renamed or changed based on their similarity.
+More details can be found in the associated [scientific publication](https://github.com/pooya-rostami/gawd).
 
 ---
 
@@ -16,8 +17,8 @@ Given a pair of workflow files as input, and taking the specific syntax of GitHu
 
 **Important:** The project repository has moved.
 
+- **Current address:** `https://github.com/sgl-umons/gawd`
 - **Old address:** `https://github.com/pooya-rostami/gawd`
-- **New address:** `https://github.com/sgl-umons/gawd`
 
 All future development, issues, pull requests, and releases are maintained under the new repository. Please update your bookmarks, CI references, and dependency links accordingly.
 
@@ -219,9 +220,11 @@ This tool is distributed under [GNU Lesser General Public License v3](https://gi
 You can refer to the scientific publication describing this tool using
 ```
 @inproceedings{gawd2024MSR,
-  author = {{Rostami Mazrae}, Pooya and Decan, Alexandre and Mens, Tom},
+  author = {Rostami Mazrae, Pooya and Decan, Alexandre and Mens, Tom},
   title = {gawd: A Differencing Tool for GitHub Actions Workflows},
-  booktitle = {International Conference on Mining Software Repositories - Data and Tools Showcase Track},
+  booktitle = {International Conference on Mining Software Repositories (MSR)- Data and Tools Showcase Track},
+  doi = {https://doi.org/10.1145/3643991.3644873},
+  pages = {682-682},
   year = 2024
 }
 ```
@@ -230,10 +233,10 @@ You can also refer to this tool directly using:
 
 ```
 @software{gawd2023,
-  author = {{Rostami Mazrae}, Pooya and Decan, Alexandre},
+  author = {Rostami Mazrae, Pooya and Decan, Alexandre},
   title = {gawd: GitHub Actions Workflow Differ},
-  url = {https://github.com/pooya-rostami/gawd},
+  url = {https://github.com/sgl-umons/gawd},
   year = 2023,
-  institute = {Software Engineering Lab at University of Mons, Belgium}
+  institute = {Software Engineering Lab, University of Mons, Belgium}
 }
 ```
